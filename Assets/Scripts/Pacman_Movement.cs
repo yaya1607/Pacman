@@ -63,7 +63,6 @@ public class Pacman_Movement : MonoBehaviour
     public bool Occupied(Vector2 direction)
     {
         RaycastHit2D hit = Physics2D.BoxCast(transform.position, Vector2.one * 0.75f, 0f, direction, 1.5f, obstacleLayer);
-        Debug.Log(hit.collider != null);
         
         return hit.collider != null;
     }
