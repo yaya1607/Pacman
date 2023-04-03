@@ -1,35 +1,51 @@
 
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    
     public Pacman pacman;
     public Ghost[] ghost;
     public Transform pellets;
+    public ShowText showText;
+    public bool inGame { get; private set; }
+    public String notification { get; private set; }
     public int score { get; private set; }
     public int ghostMultiplier { get; private set; }
     public int lives { get; private set; }
+    public BackgroundMusic soundManager { get; private set; }
     private void Start()
     {
         NewGame();
     }
 
+    private void Awake()
+    {
+        soundManager = GetComponentInChildren<BackgroundMusic>();
+    }
+
     private void NewGame()
     {
+        inGame = true;
         SetScore(0);
         SetLives(3);
         NewRound();
+        soundManager.PlayMusic() ;
     }
 
     private void SetLives(int lives)
     {
         this.lives = lives;
+        showText.SetLives(this.lives);
     }
 
     private void SetScore(int score)
     {
         this.score = score;
+        showText.SetScore(this.score);
+        
     }
 
     private void NewRound()
@@ -46,9 +62,10 @@ public class GameManager : MonoBehaviour
         ResetGhostMultiplier();
         for (int i=0; i< ghost.Length; i++)
         {
-            ghost[i].gameObject.SetActive(true);
+            ghost[i].ResetState();
         }
-        pacman.gameObject.SetActive(true);
+        
+        pacman.ResetState();
     }
 
     private void GameOver()
@@ -59,6 +76,10 @@ public class GameManager : MonoBehaviour
             ghost[i].gameObject.SetActive(false);
         }
         pacman.gameObject.SetActive(false);
+        soundManager.PlayLoseSound();
+        notification = "You lose\nPress any key to play again.";
+        showText.SetNotification(notification);
+        inGame = false;
     }
 
     public void GhostEaten(Ghost ghost)
@@ -76,6 +97,8 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            soundManager.PlayDeathSound();
+            pacman.gameObject.SetActive(false);
             Invoke(nameof(ResetState), 3f);
         }
     }
@@ -84,21 +107,34 @@ public class GameManager : MonoBehaviour
     {
         pellet.gameObject.SetActive(false);
         SetScore(this.score + pellet.points);
-        Debug.Log("Score: " +score);
         if (!HasRemainingPellets())
         {
-            this.pacman.gameObject.SetActive(false);
-            Invoke(nameof(NewGame), 3f);
+            WinGame();
         }
 
     }
 
+    private void WinGame()
+    {
+        notification = "You win\nPress any key to play again.";
+        showText.SetNotification(notification);
+        soundManager.PlayWinSound();
+        this.pacman.gameObject.SetActive(false);
+        inGame = false;
+    }
+
     public void PowerPelletEaten( PowerPellet pellet)
     {
+        for(int i = 0; i < ghost.Length; i++)
+        {
+            if (!ghost[i].home.enabled)
+            {
+                ghost[i].frightened.Enable(pellet.duration);
+            }
+        }
         PelletEaten(pellet);
         CancelInvoke();
         Invoke(nameof(ResetGhostMultiplier), pellet.duration);
-        
     }
 
     private bool HasRemainingPellets()
@@ -120,9 +156,10 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (lives <= 0 && Input.anyKeyDown)
+        if (!inGame && Input.anyKeyDown )
         {
             NewGame();
+            showText.TurnOffNotification();
         }
     }
 

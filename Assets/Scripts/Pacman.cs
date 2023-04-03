@@ -3,11 +3,11 @@ using UnityEngine;
 
 public class Pacman : MonoBehaviour
 {
-    public Pacman_Movement movement { get; private set; }
+    public Movement movement { get; private set; }
     
     private void Awake()
     {
-        movement = GetComponent<Pacman_Movement>();
+        movement = GetComponent<Movement>();
     }
     private void Update()
     {
@@ -29,5 +29,10 @@ public class Pacman : MonoBehaviour
         }
         float angle = Mathf.Atan2(movement.direction.y, movement.direction.x);
         this.transform.rotation = Quaternion.AngleAxis(angle * Mathf.Rad2Deg, Vector3.forward);
+    }
+    public void ResetState()
+    {
+        this.movement.ResetState();
+        this.gameObject.SetActive(true);
     }
 }
