@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class Ghost_Scatter : Ghost_Behavior
 {
+    
     private void OnTriggerEnter2D(Collider2D collider)
     {
         Node node = collider.GetComponent<Node>();
@@ -20,10 +21,6 @@ public class Ghost_Scatter : Ghost_Behavior
             }this.ghost.movement.SetDirection(node.enableDirection[index]);
         }
         
-    }
-    private void Start()
-    {
-        Debug.Log("Scatter");
     }
     private void OnDisable()
     {

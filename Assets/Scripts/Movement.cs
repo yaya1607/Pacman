@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using UnityEngine;
 
 public class Movement : MonoBehaviour
@@ -7,10 +8,10 @@ public class Movement : MonoBehaviour
     public float speedMultiplier = 1f;
     public Vector2 initialDirection;
     public LayerMask obstacleLayer;
-
+    public bool isLoad;
     public new Rigidbody2D rigidbody { get; private set; }
-    public Vector2 direction { get; private set; }
-    public Vector2 nextDirection { get; private set; }
+    public Vector2 direction { get; private  set; }
+    public Vector2 nextDirection { get; set; }
     public Vector3 startingPosition { get; private set; }
 
     private void Awake()
@@ -21,7 +22,21 @@ public class Movement : MonoBehaviour
 
     private void Start()
     {
-        ResetState();
+        if (!isLoad)
+        {
+            ResetState();
+        }
+        else
+        {
+            LoadState();
+        }
+        
+    }
+    public void LoadState()
+    {
+        speedMultiplier = 1.0f;
+        rigidbody.isKinematic = false;
+        this.enabled = true;
     }
 
     public void ResetState()
@@ -30,7 +45,6 @@ public class Movement : MonoBehaviour
         direction = initialDirection;
         nextDirection = Vector2.zero;
         transform.position = startingPosition;
-        rigidbody.isKinematic = false;
         this.enabled = true;
     }
     private void Update()
@@ -38,7 +52,6 @@ public class Movement : MonoBehaviour
         if(nextDirection != Vector2.zero)
         {
             SetDirection(nextDirection);
-
         }
     }
     private void FixedUpdate()
@@ -51,6 +64,7 @@ public class Movement : MonoBehaviour
     {
         if (forced || !Occupied(direction))
         {
+
             this.direction = direction;
             nextDirection = Vector2.zero;
             

@@ -550,6 +550,10 @@ MonoBehaviour:
   duration: 0
   inside: {fileID: 0}
   outside: {fileID: 0}
+  body: {fileID: 4522745716352405032}
+  eyes: {fileID: 4522745716094750681}
+  blue: {fileID: 4522745716957751779}
+  white: {fileID: 4522745716522297018}
 --- !u!114 &-552308259886780695
 MonoBehaviour:
   m_ObjectHideFlags: 0

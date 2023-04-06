@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Ghost : MonoBehaviour
 {
+    public Rigidbody2D rigidbody { get; private set; }
     public Movement movement { get; private set; }
     public Ghost_Chase chase {get; private set;}
     public Ghost_Scatter scatter { get; private set; }
@@ -11,11 +12,12 @@ public class Ghost : MonoBehaviour
     public Ghost_Frightened frightened { get; private set; }
     public Ghost_Behavior initialBehavior;
     public Transform target;
-
+    public bool isLoad;
     public int points = 200;
 
     private void Awake()
     {
+        this.rigidbody = GetComponent<Rigidbody2D>();
         this.movement = GetComponent<Movement>();
         this.home = GetComponent<Ghost_Home>();
         this.scatter = GetComponent<Ghost_Scatter>();
@@ -25,7 +27,11 @@ public class Ghost : MonoBehaviour
 
     private void Start()
     {
-        ResetState();
+        if (!isLoad)
+        {
+            ResetState();
+        }
+        
     }
 
     public void ResetState()
@@ -40,7 +46,8 @@ public class Ghost : MonoBehaviour
         {
             this.home.Disable();
         }
-        else{
+        else
+        {
             this.initialBehavior.Enable();
         }
     }
@@ -58,4 +65,9 @@ public class Ghost : MonoBehaviour
              
         }   
     }
+    public void SetPosition(Vector3 position)
+    {
+        this.rigidbody.position = position;
+    }
+
 }

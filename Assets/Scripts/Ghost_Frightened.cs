@@ -13,7 +13,6 @@ public class Ghost_Frightened : Ghost_Behavior
     public override void Enable(float duration)
     {
         base.Enable(duration);
-
         this.body.enabled = false;
         this.eyes.enabled = false;
         this.blue.enabled = true;
@@ -71,7 +70,6 @@ public class Ghost_Frightened : Ghost_Behavior
         this.eyes.enabled = true;
         this.blue.enabled = false;
         this.white.enabled = false;
-
         Vector3 position = this.ghost.home.inside.position;
         position.z = this.ghost.transform.position.z;
         this.ghost.transform.position = position;

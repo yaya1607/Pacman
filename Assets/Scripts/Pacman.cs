@@ -4,10 +4,12 @@ using UnityEngine;
 public class Pacman : MonoBehaviour
 {
     public Movement movement { get; private set; }
+    public Rigidbody2D rigidbody { get; private set; }
     
     private void Awake()
     {
         movement = GetComponent<Movement>();
+        rigidbody = GetComponent<Rigidbody2D>();
     }
     private void Update()
     {
@@ -34,5 +36,10 @@ public class Pacman : MonoBehaviour
     {
         this.movement.ResetState();
         this.gameObject.SetActive(true);
+    }
+
+    public void SetPosition(Vector3 position)
+    {
+        this.rigidbody.position = position;
     }
 }
