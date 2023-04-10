@@ -3,7 +3,6 @@ using System;
 using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
-
 public class GameManager : MonoBehaviour
 {
     
@@ -11,7 +10,7 @@ public class GameManager : MonoBehaviour
     public Ghost[] ghost;
     public Transform pellets;
     public ShowText showText;
-
+    
     public bool inGame { get; private set; }
     public String notification { get; private set; }
     public int score { get; private set; }
@@ -42,6 +41,7 @@ public class GameManager : MonoBehaviour
         SetScore(0);
         SetLives(3);
         NewRound();
+        SetHighScore();
         soundManager.PlayMusic();
     }
 
@@ -55,7 +55,7 @@ public class GameManager : MonoBehaviour
     {
         this.score = score;
         showText.SetScore(this.score);
-        
+
     }
 
     private void NewRound()
@@ -72,9 +72,8 @@ public class GameManager : MonoBehaviour
         ResetGhostMultiplier();
         for (int i=0; i< ghost.Length; i++)
         {
-            ghost[i].ResetState();
-            ghost[i].isLoad = false;
             ghost[i].movement.isLoad = false;
+            ghost[i].ResetState();
         }
         
         pacman.ResetState();
@@ -99,6 +98,7 @@ public class GameManager : MonoBehaviour
     {
         this.SetScore(this.score + ghost.points);
         this.ghostMultiplier++;
+        UpdateHighScore();
     }
 
     public void PacmanEaten()
@@ -124,7 +124,7 @@ public class GameManager : MonoBehaviour
         {
             WinGame();
         }
-
+        UpdateHighScore();
     }
 
     private void WinGame()
@@ -188,9 +188,17 @@ public class GameManager : MonoBehaviour
         int index = 0;
         string json = File.ReadAllText(Application.dataPath + "/SaveGame/Save.txt");
         SaveData loadData = JsonUtility.FromJson<SaveData>(json);
-        this.pacman.SetPosition(loadData.pacmanPosition);
+        if (loadData.isPacmanActive)
+        {
+            this.pacman.SetPosition(loadData.pacmanPosition);
+            this.pacman.movement.SetDirection(loadData.pacmanDirection, true);
+        }
+        else
+        {
+            this.pacman.gameObject.SetActive(false);
+            Invoke(nameof(ResetState),3f);
+        }
         this.pacman.movement.isLoad = true;
-        this.pacman.movement.SetDirection( loadData.pacmanDirection,true);
         this.SetScore(loadData.score);
         this.SetLives(loadData.lives);
         foreach (Transform pellet in this.pellets)
@@ -210,13 +218,15 @@ public class GameManager : MonoBehaviour
             LoadGhostData(loadData,i);
         }
         File.Delete(Application.dataPath + "/SaveGame/Save.txt");
+        SetHighScore();
     }
 
-    private void SaveGame()
+    public void SaveGame()
     {
         SaveData saveData = new SaveData();
         saveData.pacmanDirection = this.pacman.movement.direction;
         saveData.pacmanPosition = this.pacman.transform.position;
+        saveData.isPacmanActive = this.pacman.gameObject.activeSelf;
         saveData.score = this.score;
         saveData.lives = this.lives;
         saveData.pellets = new bool[this.pellets.childCount];
@@ -230,6 +240,7 @@ public class GameManager : MonoBehaviour
         saveData.ghostChaseDuration = new float[this.ghost.Length];
         saveData.ghostFrightenedDuration = new float[this.ghost.Length];
         saveData.ghostScatterDuration = new float[this.ghost.Length];
+        saveData.ghostElapsed = new float[this.ghost.Length];
 
         int index = 0;
         foreach(Transform pellet in this.pellets)
@@ -251,13 +262,13 @@ public class GameManager : MonoBehaviour
 
         string json = JsonUtility.ToJson(saveData);
         File.WriteAllText(Application.dataPath+ "/SaveGame/Save.txt", json);
-        Debug.Log(json);
     }
 
     private class SaveData
     {
         public Vector2 pacmanDirection;
         public Vector3 pacmanPosition;
+        public bool isPacmanActive;
         public int score;
         public int lives;
         public bool[] pellets;
@@ -271,6 +282,7 @@ public class GameManager : MonoBehaviour
         public float[] ghostChaseDuration;
         public float[] ghostFrightenedDuration;
         public float[] ghostScatterDuration;
+        public float[] ghostElapsed;
     }
     private void SaveGhostData(SaveData saveData, int index)
     {
@@ -284,10 +296,11 @@ public class GameManager : MonoBehaviour
         saveData.ghostChaseDuration[index] = this.ghost[index].chase.DurationRemaining();
         saveData.ghostFrightenedDuration[index] = this.ghost[index].frightened.DurationRemaining();
         saveData.ghostScatterDuration[index] = this.ghost[index].scatter.DurationRemaining();
+        saveData.ghostElapsed[index] = this.ghost[index].home.elapsed;
+
     }
     private void LoadGhostData(SaveData loadData, int index)
     {
-        this.ghost[index].isLoad = true;
         this.ghost[index].SetPosition(loadData.ghostPosition[index]);
         this.ghost[index].movement.isLoad = true;
         this.ghost[index].movement.SetDirection(loadData.ghostDirection[index], true);
@@ -310,5 +323,24 @@ public class GameManager : MonoBehaviour
             this.ghost[index].scatter.Enable(loadData.ghostScatterDuration[index]);
         else
             this.ghost[index].scatter.Disable();
+
+        if (loadData.ghostElapsed[index] != 0)
+            this.ghost[index].home.StartExit(loadData.ghostElapsed[index]);
     }
+
+
+    private void SetHighScore()
+    {
+        showText.SetHighScore(PlayerPrefs.GetInt("HighScore"));
+    }
+
+    private void UpdateHighScore()
+    {
+        if(this.score > PlayerPrefs.GetInt("HighScore"))
+        {
+            PlayerPrefs.SetInt("HighScore", this.score);
+            SetHighScore();
+        }
+    }
+
 }

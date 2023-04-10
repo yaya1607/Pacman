@@ -44,7 +44,8 @@ public class Movement : MonoBehaviour
         speedMultiplier = 1.0f;
         direction = initialDirection;
         nextDirection = Vector2.zero;
-        transform.position = startingPosition;
+        transform.position = startingPosition; 
+        rigidbody.isKinematic = false;
         this.enabled = true;
     }
     private void Update()

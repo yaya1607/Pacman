@@ -8,6 +8,7 @@ public class ShowText : MonoBehaviour
     public Text score;
     public Text lives;
     public Text notification;
+    public Text highScore;
 
     public void SetScore( int score)
     {
@@ -21,6 +22,10 @@ public class ShowText : MonoBehaviour
     {
         this.notification.enabled = true;
         this.notification.text = notification;
+    }
+    public void SetHighScore(int highScore)
+    {
+        this.highScore.text = "Hi-Score:\n"+ highScore;
     }
     public void TurnOffNotification()
     {

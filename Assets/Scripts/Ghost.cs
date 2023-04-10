@@ -12,7 +12,6 @@ public class Ghost : MonoBehaviour
     public Ghost_Frightened frightened { get; private set; }
     public Ghost_Behavior initialBehavior;
     public Transform target;
-    public bool isLoad;
     public int points = 200;
 
     private void Awake()
@@ -25,15 +24,6 @@ public class Ghost : MonoBehaviour
         this.frightened = GetComponent<Ghost_Frightened>();
     }
 
-    private void Start()
-    {
-        if (!isLoad)
-        {
-            ResetState();
-        }
-        
-    }
-
     public void ResetState()
     {
         this.movement.ResetState();
@@ -41,7 +31,6 @@ public class Ghost : MonoBehaviour
         this.frightened.Disable();
         this.scatter.Enable();
         this.chase.Disable();
-
         if(this.initialBehavior != this.home)
         {
             this.home.Disable();

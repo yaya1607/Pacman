@@ -4,9 +4,10 @@ using UnityEngine;
 
 public abstract class Ghost_Behavior : MonoBehaviour
 {
-    public float passedDuration = 0;
+    public float passedDuration;
     public Ghost ghost { get; private set; }
-    public float duration;
+    public float initialDuration;
+    public float duration ;
 
     private void Awake()
     {
@@ -15,13 +16,14 @@ public abstract class Ghost_Behavior : MonoBehaviour
     }
     public void Enable()
     {
-        Enable(this.duration);
+        Enable(this.initialDuration);
     }
 
     public virtual void Enable(float duration)
     {
         this.enabled = true;
-        
+        this.passedDuration = 0;
+        this.duration = duration;
         CancelInvoke();
         Invoke(nameof(Disable),duration) ;
     }
@@ -29,10 +31,10 @@ public abstract class Ghost_Behavior : MonoBehaviour
     public virtual void Disable()
     {
         this.enabled = false;
-        passedDuration = 0;
+        this.passedDuration = 0;
         CancelInvoke();
     }
-    private void Update()
+    protected virtual void Update()
     {
         passedDuration += Time.deltaTime;
     }

@@ -507,6 +507,7 @@ MonoBehaviour:
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 512
+  isLoad: 0
 --- !u!114 &4522745717458250847
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -521,6 +522,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   initialBehavior: {fileID: 0}
   target: {fileID: 0}
+  isLoad: 0
   points: 200
 --- !u!114 &-7732841770311897546
 MonoBehaviour:
@@ -534,7 +536,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8941f620c1d6a094d9f1c63b91bf4b9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  duration: 7
+  passedDuration: 0
+  initialDuration: 7
+  duration: 0
 --- !u!114 &-1862661602616359570
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -547,13 +551,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed861d016f872894c89a071d67d772dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  passedDuration: 0
+  initialDuration: 0
   duration: 0
   inside: {fileID: 0}
   outside: {fileID: 0}
-  body: {fileID: 4522745716352405032}
-  eyes: {fileID: 4522745716094750681}
-  blue: {fileID: 4522745716957751779}
-  white: {fileID: 4522745716522297018}
+  isExiting: 0
 --- !u!114 &-552308259886780695
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -566,7 +569,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40bf47cd90d965a43987e94c483dcffd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  duration: 8
+  passedDuration: 0
+  initialDuration: 8
+  duration: 0
   body: {fileID: 4522745716352405032}
   eyes: {fileID: 4522745716094750681}
   blue: {fileID: 4522745716957751779}
@@ -583,4 +588,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b98fff70e2895b54997756fcbca3383c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  duration: 20
+  passedDuration: 0
+  initialDuration: 20
+  duration: 0

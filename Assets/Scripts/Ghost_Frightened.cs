@@ -48,7 +48,17 @@ public class Ghost_Frightened : Ghost_Behavior
         this.ghost.movement.speedMultiplier = 1f;
         this.eaten = false;
     }
-
+    protected override void Update()
+    {
+        base.Update();
+        if (this.ghost.home.enabled)
+        {
+            this.body.enabled = false;
+            this.eyes.enabled = true;
+            this.blue.enabled = false;
+            this.white.enabled = false;
+        }
+    }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -65,11 +75,6 @@ public class Ghost_Frightened : Ghost_Behavior
     private void Eaten()
     {
         this.eaten = true;
-
-        this.body.enabled = false;
-        this.eyes.enabled = true;
-        this.blue.enabled = false;
-        this.white.enabled = false;
         Vector3 position = this.ghost.home.inside.position;
         position.z = this.ghost.transform.position.z;
         this.ghost.transform.position = position;

@@ -8,8 +8,7 @@ using UnityEngine.UI;
 
 public class MenuManager : MonoBehaviour
 {
-    
-    public TextMeshProUGUI playText;
+    public Button continueButton;
 
     private void Awake()
     {
@@ -19,15 +18,28 @@ public class MenuManager : MonoBehaviour
     {
         if (File.Exists(Application.dataPath + "/SaveGame/Save.txt"))
         {
-            playText.SetText("Continue");
+            continueButton.gameObject.SetActive(true);
         }
         else
         {
-            playText.SetText("Play");
-        }
+            continueButton.gameObject.SetActive(false);
+        }    
     }
-    public void Play()
+    public void NewGame()
+    {
+        if (File.Exists(Application.dataPath + "/SaveGame/Save.txt"))
+        {
+            File.Delete(Application.dataPath + "/SaveGame/Save.txt");
+        }
+        Continue();
+    }
+    public void Continue()
     {
         SceneManager.LoadScene("Pacman");
+    }
+
+    public void Quit()
+    {
+        Application.Quit();
     }
 }
